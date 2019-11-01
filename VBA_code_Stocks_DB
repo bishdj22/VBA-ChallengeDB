@@ -1,0 +1,107 @@
+Sub stocks()
+    For Each ws In Worksheets
+            
+        ws.Range("J1").value = "Ticker"
+        ws.Range("K1").value = "Year Open"
+        ws.Range("L1").value = "Year Close"
+        ws.Range("M1").value = "Year Change ($)"
+        ws.Range("N1").value = "Year Change (%)"
+        ws.Range("O1").value = "Total Volume"
+        ws.Range("S1").value = "Ticker"
+        ws.Range("T1").value = "Value"
+        ws.Range("R2").value = "Greatest % Increase"
+        ws.Range("R3").value = "Greatest % Decrease"
+        ws.Range("R4").value = "Greatest Total Volume"
+        
+        Dim ticker As String
+        Dim vol As Double
+            vol = 0
+        Dim DateMinOpen As Double
+        Dim DateMaxClose As Double
+        Dim Year_change As Double
+        Dim PreviousAmt As Double
+            PreviousAmt = 2
+        Dim last_row As Long
+        Dim Summ_tbl As Integer
+            Summ_tbl = 2
+        Dim value As Double
+        Dim maxv As Double
+            maxv = Application.Max(ws.Range("N:N"))
+            ws.Range("T2").value = maxv
+        Dim minv As Double
+            minv = Application.Min(ws.Range("N:N"))
+            ws.Range("T3").value = minv
+        Dim maxvol As Double
+            maxvol = Application.Max(ws.Range("O:O"))
+            ws.Range("T4").value = maxvol
+        Dim Percent_change As Double
+        
+        last_row = ws.Cells(Rows.Count, 1).End(xlUp).Row
+        
+                For i = 2 To last_row
+                    vol = vol + ws.Cells(i, 7).value
+            
+                    
+                        If ws.Cells(i + 1, 1).value <> ws.Cells(i, 1).value Then
+                        ticker = ws.Cells(i, 1).value
+                        ws.Range("J" & Summ_tbl).value = ticker
+                        ws.Range("O" & Summ_tbl).value = vol
+                        DateMaxClose = ws.Cells(i, 6).value
+                        DateMinOpen = ws.Range("C" & PreviousAmt)
+                        Year_change = DateMaxClose - DateMinOpen
+                        ws.Range("M" & Summ_tbl).value = Year_change
+                        
+                            If DateMinOpen = 0 Then
+                                Percent_change = 0
+                            
+                            Else
+                                DateMinOpen = ws.Range("C" & PreviousAmt)
+                                Percent_change = Year_change / DateMinOpen
+                            
+                            End If
+                            
+                            ws.Range("N" & Summ_tbl).NumberFormat = "0.00%"
+                            ws.Range("N" & Summ_tbl).value = Percent_change
+                            ws.Range("K" & Summ_tbl).value = DateMinOpen
+                            ws.Range("L" & Summ_tbl).value = DateMaxClose
+                            
+                            If ws.Range("M" & Summ_tbl).value >= 0 Then
+                                ws.Range("M" & Summ_tbl).Interior.ColorIndex = 4
+                
+                            Else
+                                ws.Range("M" & Summ_tbl).Interior.ColorIndex = 3
+                
+                            End If
+                            
+                            Summ_tbl = Summ_tbl + 1
+                            PreviousAmt = i + 1
+            
+                            End If
+                    
+            Next i
+        
+       last_row = ws.Cells(Rows.Count, 10).End(xlUp).Row
+        
+        For j = 2 To last_row
+            If ws.Range("N" & j).value = maxv Then
+            ws.Range("S2").value = ws.Range("J" & j).value
+            ws.Range("T2").value = maxv
+            ws.Range("T2").NumberFormat = "0.00%"
+            
+            ElseIf ws.Range("N" & j).value = minv Then
+            ws.Range("S3").value = ws.Range("J" & j).value
+            ws.Range("T3").value = minv
+            
+            ElseIf ws.Range("O" & j).value = maxvol Then
+            ws.Range("S4").value = ws.Range("J" & j).value
+            ws.Range("T4").value = maxvol
+            
+            End If
+        
+        
+        Next j
+        
+    Next ws
+    
+        
+End Sub
