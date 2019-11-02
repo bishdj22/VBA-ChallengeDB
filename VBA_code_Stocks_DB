@@ -1,3 +1,4 @@
+'Note: this code includes all of the challenges (easy, medium, hard).
 Sub stocks()
     For Each ws In Worksheets
             
